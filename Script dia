@@ -58,8 +58,8 @@ end
 
 local function HeavyFlash()
 	tap(Enum.KeyCode.R, 0.1)
-	tap(Enum.KeyCode.K, 0.1)
-	tap(Enum.KeyCode.L, 0.05)
+	tap(Enum.KeyCode.L, 0.1)
+	tap(Enum.KeyCode.K, 0.05)
 end
 
 local function Dash()
