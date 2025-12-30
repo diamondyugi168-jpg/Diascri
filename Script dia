@@ -1,4 +1,4 @@
---// Delta Combo Keyboard (Fast & Stable)
+--// Delta Combo Keyboard (Clean & Stable)
 
 local VIM = game:GetService("VirtualInputManager")
 
@@ -26,72 +26,67 @@ toggle.BorderSizePixel = 0
 
 local open = true
 toggle.MouseButton1Click:Connect(function()
-	open = not open
-	main.Visible = open
+open = not open
+main.Visible = open
 end)
 
---// SMART LOCK (สั้น แต่กันค้าง)
-local busy = false
+--// SMART COOLDOWN
+local lastPress = 0
+local COOLDOWN = 0.18
+
 local function safeRun(func)
-	if busy then return end
-	busy = true
-	func()
-	task.delay(0.12, function() -- 👈 สั้นลง แต่พอ
-		busy = false
-	end)
+local now = os.clock()
+if now - lastPress < COOLDOWN then return end
+lastPress = now
+task.spawn(func)
 end
 
---// FAST TAP (จูนมาแล้ว)
-local function tap(key, delay)
-	VIM:SendKeyEvent(true, key, false, game)
-	task.wait(delay or 0.1)   -- 👈 เร็วขึ้น
-	VIM:SendKeyEvent(false, key, false, game)
-	task.wait(0.01)
+--// SAFE TAP (กันค้างจริง)
+local function tap(key, hold)
+VIM:SendKeyEvent(true, key, false, game)
+task.wait(hold or 0.055)
+VIM:SendKeyEvent(false, key, false, game)
 end
 
 --// COMBOS
 local function LightFlash()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.K)
-	tap(Enum.KeyCode.K)
+tap(Enum.KeyCode.R)
+tap(Enum.KeyCode.K)
+tap(Enum.KeyCode.K)
 end
 
 local function HeavyFlash()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.L)
-	tap(Enum.KeyCode.K)
+tap(Enum.KeyCode.R)
+tap(Enum.KeyCode.L)
+tap(Enum.KeyCode.K)
 end
 
 local function DashPush()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.Space)
-	tap(Enum.KeyCode.K)
-end
-
-local function HeavyBom()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.L)
-	tap(Enum.KeyCode.L)
+tap(Enum.KeyCode.R)
+tap(Enum.KeyCode.Space)
+tap(Enum.KeyCode.K)
 end
 
 local function Dash()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.Space)
-	tap(Enum.KeyCode.Space, 0.04)
+tap(Enum.KeyCode.R)
+tap(Enum.KeyCode.Space)
+tap(Enum.KeyCode.Space, 0.045)
 end
 
 --// BUTTON
 local function btn(text, x, y, func)
-	local b = Instance.new("TextButton", main)
-	b.Size = UDim2.new(0, 90, 0, 36)
-	b.Position = UDim2.new(0, x, 0, y)
-	b.Text = text
-	b.TextSize = 15
-	b.BackgroundTransparency = 0.15
-	b.BorderSizePixel = 0
-	b.MouseButton1Click:Connect(function()
-		safeRun(func)
-	end)
+local b = Instance.new("TextButton", main)
+b.Size = UDim2.new(0, 90, 0, 36)
+b.Position = UDim2.new(0, x, 0, y)
+b.Text = text
+b.TextSize = 15
+b.BackgroundTransparency = 0.15
+b.BorderSizePixel = 0
+
+b.MouseButton1Click:Connect(function()  
+	safeRun(func)  
+end)
+
 end
 
 --// LAYOUT
@@ -99,5 +94,4 @@ btn("Light Flash", 20, 10, LightFlash)
 btn("Heavy Flash", 120, 10, HeavyFlash)
 btn("Dash Push",   220, 10, DashPush)
 
-btn("Heavy Bom", 20, 55, HeavyBom)
-btn("Dash",      120, 55, Dash)
+btn("Dash", 120, 55, Dash)
