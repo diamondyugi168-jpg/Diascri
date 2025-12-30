@@ -1,4 +1,4 @@
---// Delta Combo Keyboard (Clean Version)
+--// Delta Combo Keyboard (Loop Nine Optimized)
 
 local VIM = game:GetService("VirtualInputManager")
 
@@ -9,8 +9,8 @@ gui.ResetOnSpawn = false
 gui.Parent = gethui()
 
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 320, 0, 140)
-main.Position = UDim2.new(1, -340, 0.5, -70)
+main.Size = UDim2.new(0, 200, 0, 90)
+main.Position = UDim2.new(1, -220, 0.35, -45)
 main.BackgroundColor3 = Color3.fromRGB(25,25,25)
 main.BackgroundTransparency = 0.35
 main.BorderSizePixel = 0
@@ -30,60 +30,65 @@ toggle.MouseButton1Click:Connect(function()
 	main.Visible = open
 end)
 
---// TAP
+--// TAP (บาลานซ์)
 local function tap(key, delay)
 	VIM:SendKeyEvent(true, key, false, game)
-	task.wait(delay or 0.08)
+	task.wait(delay or 0.06)
 	VIM:SendKeyEvent(false, key, false, game)
+	task.wait(0.015)
 end
 
---// COMBOS
-local function LightFlash()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.K)
-	tap(Enum.KeyCode.K)
+--// LOOP CONTROL
+local looping = false
+
+local function loopNine()
+	while looping do
+		-- Light chain
+		tap(Enum.KeyCode.R)
+		tap(Enum.KeyCode.K)
+		tap(Enum.KeyCode.K)
+		task.wait(0.03)
+
+		-- Heavy chain
+		tap(Enum.KeyCode.R)
+		tap(Enum.KeyCode.L)
+		tap(Enum.KeyCode.K)
+		task.wait(0.03)
+
+		-- Dash
+		tap(Enum.KeyCode.R)
+		tap(Enum.KeyCode.Space)
+		tap(Enum.KeyCode.Space, 0.04)
+		task.wait(0.03)
+
+		-- Dash Push
+		tap(Enum.KeyCode.R)
+		tap(Enum.KeyCode.Space)
+		tap(Enum.KeyCode.K)
+
+		task.wait(0.05) -- breathing frame
+	end
 end
 
-local function HeavyFlash()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.L)
-	tap(Enum.KeyCode.K)
-end
+--// BUTTON (กดค้าง)
+local btn = Instance.new("TextButton", main)
+btn.Size = UDim2.new(0, 160, 0, 50)
+btn.Position = UDim2.new(0, 20, 0, 20)
+btn.Text = "LOOP NINE"
+btn.TextSize = 16
+btn.BackgroundTransparency = 0.15
+btn.BorderSizePixel = 0
 
-local function HeavyBom()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.L)
-	tap(Enum.KeyCode.L)
-end
+btn.MouseButton1Down:Connect(function()
+	if looping then return end
+	looping = true
+	task.spawn(loopNine)
+end)
 
-local function Dash()
-	tap(Enum.KeyCode.R)
-	tap(Enum.KeyCode.Space)
-	tap(Enum.KeyCode.Space, 0.05)
-end
+btn.MouseButton1Up:Connect(function()
+	looping = false
+end)
 
-local function Block()
-	VIM:SendKeyEvent(true, Enum.KeyCode.F, false, game)
-	task.wait(0.12)
-	VIM:SendKeyEvent(false, Enum.KeyCode.F, false, game)
-end
-
---// BUTTON
-local function btn(text, x, y, func)
-	local b = Instance.new("TextButton", main)
-	b.Size = UDim2.new(0, 90, 0, 40)
-	b.Position = UDim2.new(0, x, 0, y)
-	b.Text = text
-	b.TextSize = 16
-	b.BackgroundTransparency = 0.15
-	b.BorderSizePixel = 0
-	b.MouseButton1Click:Connect(func)
-end
-
---// LAYOUT
-btn("Light Flash", 20, 20, LightFlash)
-btn("Heavy Flash", 120, 20, HeavyFlash)
-btn("Heavy Bom",   220, 20, HeavyBom)
-
-btn("Dash",  20, 80, Dash)
-btn("Block", 120, 80, Block)
+btn.MouseLeave:Connect(function()
+	looping = false
+end)
