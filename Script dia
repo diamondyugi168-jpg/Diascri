@@ -49,17 +49,17 @@ local loopNineRunning = false
 
 local function LoopNine()
 	while loopNineRunning do
-		tap(Enum.KeyCode.R, 0.05)
-		tap(Enum.KeyCode.K, 0.05)
-		tap(Enum.KeyCode.K, 0.05)
+		tap(Enum.KeyCode.R, 0.1)
+		tap(Enum.KeyCode.K, 0.1)
+		tap(Enum.KeyCode.K, 0.1)
+
+		tap(Enum.KeyCode.R, 0.1)
+		tap(Enum.KeyCode.L, 0.1)
+		tap(Enum.KeyCode.K, 0.1)
 
 		tap(Enum.KeyCode.R, 0.05)
-		tap(Enum.KeyCode.L, 0.05)
-		tap(Enum.KeyCode.K, 0.05)
-
-		tap(Enum.KeyCode.R, 0.05)
-		tap(Enum.KeyCode.Space, 0.05)
-		tap(Enum.KeyCode.K, 0.05)
+		tap(Enum.KeyCode.Space, 0.1)
+		tap(Enum.KeyCode.K, 0.1)
 	end
 end
 
