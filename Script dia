@@ -44,7 +44,7 @@ end
 --// FAST TAP (จูนมาแล้ว)
 local function tap(key, delay)
 	VIM:SendKeyEvent(true, key, false, game)
-	task.wait(delay or 0.07)   -- 👈 เร็วขึ้น
+	task.wait(delay or 0.1)   -- 👈 เร็วขึ้น
 	VIM:SendKeyEvent(false, key, false, game)
 	task.wait(0.01)
 end
