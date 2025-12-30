@@ -1,9 +1,6 @@
---// Delta Combo Keyboard (RIGHT SIDE + TRANSPARENT)
---// ใช้ VirtualInputManager
+--// Delta Combo Keyboard (Clean Version)
 
-local Players = game:GetService("Players")
 local VIM = game:GetService("VirtualInputManager")
-local player = Players.LocalPlayer
 
 --// GUI
 local gui = Instance.new("ScreenGui")
@@ -11,29 +8,20 @@ gui.Name = "DeltaKeyboard"
 gui.ResetOnSpawn = false
 gui.Parent = gethui()
 
---// MAIN FRAME (ขวาจอ + โปร่งใส)
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 420, 0, 220)
-main.Position = UDim2.new(1, -440, 0.5, -110) -- 👉 ขวาจอ
+main.Size = UDim2.new(0, 320, 0, 140)
+main.Position = UDim2.new(1, -340, 0.5, -70)
 main.BackgroundColor3 = Color3.fromRGB(25,25,25)
-main.BackgroundTransparency = 0.35 -- 👉 โปร่งใส
+main.BackgroundTransparency = 0.35
 main.BorderSizePixel = 0
-main.Visible = true
 
-local stroke = Instance.new("UIStroke", main)
-stroke.Color = Color3.fromRGB(160,0,255)
-stroke.Thickness = 2
-stroke.Transparency = 0.1
-
---// TOGGLE BUTTON (มุมขวาล่าง)
+--// TOGGLE
 local toggle = Instance.new("TextButton", gui)
 toggle.Size = UDim2.new(0, 50, 0, 50)
 toggle.Position = UDim2.new(1, -60, 1, -60)
-toggle.BackgroundColor3 = Color3.fromRGB(20,20,20)
-toggle.BackgroundTransparency = 0.2
-toggle.TextColor3 = Color3.fromRGB(255,255,255)
 toggle.Text = "KB"
 toggle.TextSize = 18
+toggle.BackgroundTransparency = 0.2
 toggle.BorderSizePixel = 0
 
 local open = true
@@ -42,34 +30,36 @@ toggle.MouseButton1Click:Connect(function()
 	main.Visible = open
 end)
 
---// INPUT FUNC
+--// TAP
 local function tap(key, delay)
 	VIM:SendKeyEvent(true, key, false, game)
-	task.wait(delay or 0.05)
+	task.wait(delay or 0.08)
 	VIM:SendKeyEvent(false, key, false, game)
 end
 
 --// COMBOS
 local function LightFlash()
-	tap(Enum.KeyCode.R, 0.1)
-	tap(Enum.KeyCode.K, 0.1)
-	tap(Enum.KeyCode.K, 0.05)
+	tap(Enum.KeyCode.R)
+	tap(Enum.KeyCode.K)
+	tap(Enum.KeyCode.K)
 end
 
 local function HeavyFlash()
-	tap(Enum.KeyCode.R, 0.1)
-	tap(Enum.KeyCode.L, 0.1)
-	tap(Enum.KeyCode.K, 0.05)
+	tap(Enum.KeyCode.R)
+	tap(Enum.KeyCode.L)
+	tap(Enum.KeyCode.K)
+end
+
+local function HeavyBom()
+	tap(Enum.KeyCode.R)
+	tap(Enum.KeyCode.L)
+	tap(Enum.KeyCode.L)
 end
 
 local function Dash()
-	tap(Enum.KeyCode.R, 0.08)
-	tap(Enum.KeyCode.Space, 0.08)
+	tap(Enum.KeyCode.R)
+	tap(Enum.KeyCode.Space)
 	tap(Enum.KeyCode.Space, 0.05)
-end
-
-local function Ulti()
-	tap(Enum.KeyCode.Q, 0)
 end
 
 local function Block()
@@ -78,32 +68,22 @@ local function Block()
 	VIM:SendKeyEvent(false, Enum.KeyCode.F, false, game)
 end
 
---// BUTTON CREATOR (โปร่งใสนิดๆ)
-local function makeBtn(text, pos, callback)
+--// BUTTON
+local function btn(text, x, y, func)
 	local b = Instance.new("TextButton", main)
 	b.Size = UDim2.new(0, 90, 0, 40)
-	b.Position = pos
-	b.BackgroundColor3 = Color3.fromRGB(35,35,35)
-	b.BackgroundTransparency = 0.15
-	b.TextColor3 = Color3.fromRGB(255,255,255)
+	b.Position = UDim2.new(0, x, 0, y)
 	b.Text = text
 	b.TextSize = 16
+	b.BackgroundTransparency = 0.15
 	b.BorderSizePixel = 0
-	b.MouseButton1Click:Connect(callback)
+	b.MouseButton1Click:Connect(func)
 end
 
 --// LAYOUT
-makeBtn("Light Flash", UDim2.new(0, 20, 0, 20), LightFlash)
-makeBtn("Heavy Flash", UDim2.new(0, 120, 0, 20), HeavyFlash)
-makeBtn("Dash",        UDim2.new(0, 220, 0, 20), Dash)
+btn("Light Flash", 20, 20, LightFlash)
+btn("Heavy Flash", 120, 20, HeavyFlash)
+btn("Heavy Bom",   220, 20, HeavyBom)
 
-makeBtn("ULTI",  UDim2.new(0, 20, 0, 80), Ulti)
-makeBtn("BLOCK", UDim2.new(0, 120, 0, 80), Block)
-
-makeBtn("Light", UDim2.new(0, 20, 0, 140), function()
-	tap(Enum.KeyCode.K, 0)
-end)
-
-makeBtn("Heavy", UDim2.new(0, 120, 0, 140), function()
-	tap(Enum.KeyCode.L, 0)
-end)
+btn("Dash",  20, 80, Dash)
+btn("Block", 120, 80, Block)
