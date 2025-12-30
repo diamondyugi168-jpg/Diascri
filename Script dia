@@ -1,4 +1,4 @@
---// Delta Combo Keyboard (Loop Nine Optimized)
+--// Delta Combo Keyboard (Loop Nine Smooth)
 
 local VIM = game:GetService("VirtualInputManager")
 
@@ -30,7 +30,7 @@ toggle.MouseButton1Click:Connect(function()
 	main.Visible = open
 end)
 
---// TAP (บาลานซ์)
+--// TAP
 local function tap(key, delay)
 	VIM:SendKeyEvent(true, key, false, game)
 	task.wait(delay or 0.06)
@@ -38,36 +38,44 @@ local function tap(key, delay)
 	task.wait(0.015)
 end
 
---// LOOP CONTROL
+--// LOOP STATE
 local looping = false
+local stopping = false
 
+--// ONE FULL COMBO (เช็คสถานะทุกจุด)
+local function runCombo()
+	-- Light
+	if not looping then return end
+	tap(Enum.KeyCode.R); tap(Enum.KeyCode.K); tap(Enum.KeyCode.K)
+	task.wait(0.035)
+
+	-- Heavy
+	if not looping then return end
+	tap(Enum.KeyCode.R); tap(Enum.KeyCode.L); tap(Enum.KeyCode.K)
+	task.wait(0.035)
+
+	-- Dash
+	if not looping then return end
+	tap(Enum.KeyCode.R); tap(Enum.KeyCode.Space); tap(Enum.KeyCode.Space, 0.04)
+	task.wait(0.035)
+
+	-- Dash Push
+	if not looping then return end
+	tap(Enum.KeyCode.R); tap(Enum.KeyCode.Space); tap(Enum.KeyCode.K)
+end
+
+--// LOOP
 local function loopNine()
+	-- 🌱 warm-up
+	task.wait(0.08)
+
 	while looping do
-		-- Light chain
-		tap(Enum.KeyCode.R)
-		tap(Enum.KeyCode.K)
-		tap(Enum.KeyCode.K)
-		task.wait(0.03)
-
-		-- Heavy chain
-		tap(Enum.KeyCode.R)
-		tap(Enum.KeyCode.L)
-		tap(Enum.KeyCode.K)
-		task.wait(0.03)
-
-		-- Dash
-		tap(Enum.KeyCode.R)
-		tap(Enum.KeyCode.Space)
-		tap(Enum.KeyCode.Space, 0.04)
-		task.wait(0.03)
-
-		-- Dash Push
-		tap(Enum.KeyCode.R)
-		tap(Enum.KeyCode.Space)
-		tap(Enum.KeyCode.K)
-
-		task.wait(0.05) -- breathing frame
+		runCombo()
+		task.wait(0.06) -- spacing ระหว่างรอบ
 	end
+
+	-- 🌙 cool-down (ให้ engine จบเฟรมสุดท้าย)
+	task.wait(0.1)
 end
 
 --// BUTTON (กดค้าง)
